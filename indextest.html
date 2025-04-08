@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Test Autofill LifeBook – Questions & Réponses</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script type="module">
+    window.addEventListener("DOMContentLoaded", () => {
+      const questions = [
+        "Quel est votre prénom ?",
+        "C’est un très beau prénom. Pourriez-vous m’en dire plus sur son origine ou la raison de ce choix ?",
+        "Où avez-vous grandi et que pouvez-vous me dire sur cet endroit ? Comment ce lieu a-t-il influencé votre enfance ?",
+        "Quel était votre jeu ou activité préféré durant votre enfance ?",
+        "Parlez-moi un peu de vos parents : métiers, personnalités, anecdotes, influence sur votre vie ?",
+        "Et vos frères et sœurs, si vous en avez ?",
+        "Quel type d’enfant étiez-vous et quels étaient vos rêves ?",
+        "Souvenirs marquants de votre jeune scolarité ?",
+        "Vos amis d’enfance et premiers amours ?",
+        "Un voyage marquant durant votre enfance ?",
+        "Un événement historique ou changement sociétal qui vous a marqué étant enfant ?",
+        "Comment décririez-vous vos années de collège (11–14 ans) ?",
+        "Anecdotes marquantes de votre adolescence ?",
+        "Comment étiez-vous ado (qualités, défauts, rêves, peurs) ?",
+        "Une histoire d’amour marquante à cette époque ?",
+        "Vos hobbies ou passions d’adolescence ?",
+        "Votre période au lycée (15–18 ans) ?",
+        "Vos ambitions à cette époque ?",
+        "Vos relations familiales ont-elles évolué entre 15 et 18 ans ?",
+        "Anecdotes marquantes (voyages, mésaventures, etc.) ?",
+        "Décisions prises à 18 ans pour votre avenir ?",
+        "Moment où vous avez quitté le cocon familial ?",
+        "Difficultés entre 18 et 25 ans (études, travail, amour...) ?",
+        "Moments heureux marquants de cette période ?",
+        "Influence de cette période sur qui vous êtes ?",
+        "Parcours professionnel : défis et succès ?",
+        "Comment analysez-vous vos relations amoureuses de jeunesse ?",
+        "Comment décririez-vous la personne que vous êtes aujourd’hui ?",
+        "Tournants majeurs entre 25 et 40 ans ?",
+        "Vie professionnelle durant cette période ?",
+        "Évolution de votre vie personnelle / relations ?",
+        "Avez-vous fondé une famille ?",
+        "Équilibre vie pro / perso ?",
+        "Voyages ou aventures significatives ?",
+        "Moments de réalisation ou développement personnel ?",
+        "Changement de valeurs ou perspectives ?",
+        "Nouveaux hobbies ou passions ?",
+        "Moments les plus heureux ?",
+        "Leçons de vie à partager ?",
+        "Évolution de votre carrière et ambitions ?",
+        "Avez-vous eu des mentors ?",
+        "Votre vision de l’avenir à l’époque ?",
+        "Partenaire / enfants : impact sur votre vie ?",
+        "Vision actuelle de la vie vs à 25 ans ?",
+        "Événements inattendus qui ont changé votre perspective ?",
+        "Conseils à quelqu’un qui entre dans cette période ?",
+        "Rêves réalisés ou modifiés ?",
+        "Comment cette période vous a forgé ?",
+        "Début de vos 40 ans : changements ?",
+        "Carrière à cette période ?",
+        "Évolution des relations familiales / amicales ?",
+        "Changements personnels (mariage, divorce, enfants partis...) ?",
+        "Transitions importantes (soutien aux parents, syndrome du nid vide...) ?",
+        "Nouveaux loisirs ou passions après 40 ans ?",
+        "Évolution santé et bien-être ?",
+        "Réalisations marquantes ?",
+        "Changement de perspectives / valeurs ?",
+        "Choix audacieux ou risques pris ?",
+        "Préparation retraite ou avenir ?",
+        "Moments de réflexion importants ?",
+        "Équilibre travail / famille / loisirs ?",
+        "Engagements sociaux ou bénévoles ?",
+        "Votre vision de l’avenir aujourd’hui ?",
+        "Conseils à ceux qui entrent dans la quarantaine ?",
+        "Leçons apprises entre 40 et 60 ans ?",
+        "Objectifs après 60 ans ?",
+        "Gestion des défis liés à l’âge ?",
+        "Bilan de cette période ?",
+        "Passage à la retraite ?",
+        "Changements après 60 ans ?",
+        "Comment occupez-vous vos journées ?",
+        "Nouvelles passions ou anciens intérêts retrouvés ?",
+        "Évolution des relations à ce stade ?",
+        "Voyages après 60 ans ?",
+        "Gestion des changements physiques ?",
+        "Engagement social ou bénévole ?",
+        "Changement de valeurs après 60 ans ?",
+        "Leçons de vie spécifiques à cette période ?",
+        "Vision de votre héritage ?",
+        "Objectifs ou rêves encore à vivre ?",
+        "Réflexion sur succession et fin de vie ?",
+        "Connexion avec les autres à ce stade ?",
+        "Adaptation pour rester actif ?",
+        "Réflexion sur la place des personnes âgées ?",
+        "Gestion des pertes ou changements sociaux ?",
+        "Gratitude : pour quoi êtes-vous le plus reconnaissant ?",
+        "Activités créatives ou artistiques ?",
+        "Les souvenirs que vous chérissez le plus ?"
+      ];
+
+      const reponses = questions.map((q, i) => `Voici une réponse riche, personnelle et réaliste à la question : « ${q} »`);
+
+      const historique = questions.map((q, i) => ({
+        role: 'user',
+        question: q,
+        content: reponses[i]
+      }));
+
+      const messagesDiv = document.getElementById("messages");
+      const afficher = (auteur, texte, classe) => {
+        const msg = document.createElement("div");
+        msg.className = "message " + classe;
+        msg.innerHTML = `<strong>${auteur} :</strong> ${texte}`;
+        messagesDiv.appendChild(msg);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+      };
+
+      historique.forEach((msg, i) => {
+        afficher("LifeBook", `<strong>${questions[i]}</strong>`, "bot");
+        afficher("Vous", msg.content, "user");
+      });
+
+      const progression = document.createElement("div");
+      progression.id = "progression";
+      progression.style.marginTop = "20px";
+      progression.innerText = `Question ${historique.length} / 89`;
+      messagesDiv.parentNode.insertBefore(progression, messagesDiv.nextSibling);
+
+      const boutonGen = document.createElement("button");
+      boutonGen.textContent = "📄 Générer le livre PDF";
+      boutonGen.style.display = "block";
+      boutonGen.style.margin = "30px auto";
+      boutonGen.style.padding = "10px 20px";
+      boutonGen.style.fontSize = "1em";
+      boutonGen.style.background = "#a347ba";
+      boutonGen.style.color = "white";
+      boutonGen.style.border = "none";
+      boutonGen.style.borderRadius = "8px";
+      boutonGen.style.cursor = "pointer";
+
+      boutonGen.addEventListener("click", () => {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        let y = 20;
+
+        historique.forEach((item, index) => {
+          const question = `${index + 1}. ${item.question}`;
+          const reponse = `Réponse : ${item.content}`;
+          const block = `${question}\n${reponse}\n`;
+          const lines = doc.splitTextToSize(block, 180);
+          if (y + lines.length * 10 > 280) {
+            doc.addPage();
+            y = 20;
+          }
+          doc.text(lines, 15, y);
+          y += lines.length * 10;
+        });
+
+        doc.save("LifeBook_Test.pdf");
+      });
+
+      document.body.appendChild(boutonGen);
+    });
+  </script>
+  <style>
+    #messages { max-width: 800px; margin: 30px auto; font-family: sans-serif; }
+    .message { background: #f5f5f5; border-radius: 8px; padding: 10px; margin-bottom: 8px; }
+    .user { background: #d2f8d2; text-align: right; }
+    .bot { background: #e8d6f8; text-align: left; }
+  </style>
+</head>
+<body>
+  <h1 style="text-align:center">📘 Simulation LifeBook – Questions & Réponses</h1>
+  <div id="messages"></div>
+</body>
+</html>
